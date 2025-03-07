@@ -144,6 +144,8 @@ Dilerseniz compose dosyanıza da ekleyebilirsiniz
 
 Kurulum tamamlandıktan sonra, tarayıcınızda `http://localhost:9180` adresine giderek Seq arayüzüne erişebilirsiniz.
 
+![SeqPanel](./documents/seq-example-panel.png)
+
 ## Seq'te Sorgu Örnekleri
 
 Seq'in güçlü sorgu yeteneklerinin birkaç örneği:
