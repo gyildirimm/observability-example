@@ -1,0 +1,52 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Local",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/ExampleWebAPI/bin/Debug/net9.0/ExampleWebAPI.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/ExampleWebAPI",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+                "uriFormat": "%s/swagger"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
+            "name": "Debug in Docker",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickRemoteProcess}",
+            "preLaunchTask": "prepare-debug",
+            "pipeTransport": {
+                "pipeProgram": "docker",
+                "pipeArgs": ["exec", "-i", "observability-api"],
+                "debuggerPath": "/vsdbg/vsdbg",
+                "pipeCwd": "${workspaceRoot}",
+                "quoteArgs": false
+            },
+            "sourceFileMap": {
+                "/src": "${workspaceRoot}",
+                "/app": "${workspaceRoot}/ExampleWebAPI"
+            },
+            "justMyCode": true,
+            "symbolOptions": {
+                "searchPaths": [],
+                "searchMicrosoftSymbolServer": true
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Start & Attach to Docker",
+            "configurations": ["Debug in Docker", "Launch Local"],
+        }
+    ]
+}

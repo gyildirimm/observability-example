@@ -1,0 +1,120 @@
+### Rider ###
+.idea/
+.idea/**/*
+*.sln.iml
+.idea/modules.xml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/assetWizard.xml
+.idea/dictionaries
+.idea/libraries/
+.idea/.rider/
+.idea/dataSources/
+.idea/dataSources.ids
+.idea/dataSources.local/
+.idea/sql/
+.idea/jsLibraryMappings.xml
+.idea/appInspection.xml
+.idea/gradle.xml
+.idea/sqlDataSources.xml
+.idea/sqlDataSources.local.xml
+.idea/project_code_style.xml
+.idea/usage.statistics.xml
+
+### Rider Logs ###
+.idea/.idea_modules.xml
+.idea/.search/
+.idea/.project-wide-analysis-cache/
+.idea/fileTemplates/
+.idea/*.iws
+
+### C# ###
+
+# Build results
+bin/
+obj/
+out/
+
+ServerSendEventsExample/bin/
+ServerSendEventsExample/obj/
+ServerSendEventsExample/out/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+#.vscode/
+
+#Deploy Volume
+.deploy/
+
+# Rider directories
+.idea/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# StyleCop
+StyleCopReport.xml
+
+# NCrunch
+*.ncrunch*
+.*crunch*.local.xml
+nCrunchTemp_*
+
+# Coverage Analysis
+*.coverage
+*.coveragexml
+_Deployment*
+*.loadtest
+*.vsmdi
+
+# CodeRush
+*.cr
+
+# Python Tools for Visual Studio
+__pycache__/
+
+# SQL Server files
+*.mdf
+*.ldf
+*.ndf
+
+# Visual Studio Code workspace
+*.code-workspace
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+.Spotlight-V100
+.Trashes
+*.swp
+._*
+
+# Rider caches and workspace-specific settings
+.idea/workspace.xml
+.idea/modules.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/dictionaries/
+.idea/libraries/

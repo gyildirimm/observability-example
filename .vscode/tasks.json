@@ -1,0 +1,77 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "docker-compose: build",
+            "type": "shell",
+            "command": "docker compose build",
+            "problemMatcher": [],
+            "isBackground": false
+        },
+        {
+            "label": "docker-compose: up",
+            "type": "shell",
+            "command": "docker compose up",
+            "problemMatcher": ["$tsc-watch"],
+            "isBackground": true,
+            "dependsOn": ["docker-compose: build"]
+        },
+        {
+            "label": "docker-compose: check",
+            "type": "shell",
+            "command": "docker ps -q -f name=observability-api",
+            "problemMatcher": [],
+            "isBackground": false
+        },
+        {
+            "label": "docker-compose: start",
+            "type": "shell",
+            "command": "docker compose up -d",
+            "problemMatcher": [],
+            "isBackground": false
+        },
+        {
+            "label": "docker-compose: down",
+            "type": "shell",
+            "command": "docker compose down",
+            "problemMatcher": [],
+            "isBackground": false
+        },
+        {
+            "label": "docker-compose: restart",
+            "type": "shell",
+            "command": "docker compose down && docker compose up --build",
+            "problemMatcher": [],
+            "isBackground": false
+        },
+        {
+            "label": "wait-for-container",
+            "type": "shell",
+            "command": "while [ -z \"$(docker ps -q -f name=observability-api)\" ]; do sleep 1; done",
+            "problemMatcher": [],
+            "isBackground": false
+        },
+        {
+            "label": "prepare-debug",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "docker-compose: build",
+                "docker-compose: start",
+                "wait-for-container"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/ExampleWebAPI.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

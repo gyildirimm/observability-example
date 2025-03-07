@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  observability-api:
+    image: observabilityexampleapi
+    container_name: observability-api
+    build:
+      context: .
+      dockerfile: ExampleWebAPI/Dockerfile
+    ports:
+      - "9178:8080"
+      - "5005:5005"
+      - "9229:9229"
+    entrypoint: []
+    command: sh -c "dotnet ExampleWebAPI.dll"
+    volumes:
+      - observabilityapi-data:/app/data
+    networks:
+      - observability-example-network
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      DOTNET_USE_POLLING_FILE_WATCHER: 1
+      DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE: false
+      DOTNET_RUNNING_IN_CONTAINER: true
+      ASPNETCORE_URLS: "http://+:8080"
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: 1
+      ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
+      NUGET_FALLBACK_PACKAGES: "/root/.nuget/fallbackpackages"
+      ENABLE_DEBUGGER: "True"
+
+networks:
+  observability-example-network:
+    driver: bridge
+
+volumes:
+  observabilityapi-data:
