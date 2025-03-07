@@ -26,6 +26,21 @@ services:
       ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS: "true"
       NUGET_FALLBACK_PACKAGES: "/root/.nuget/fallbackpackages"
       ENABLE_DEBUGGER: "True"
+    depends_on:
+      - observability-seq
+
+  observability-seq:
+    image: datalust/seq:latest
+    container_name: observability-seq
+    ports:
+      - "9179:5341"
+      - "9180:80"
+    environment:
+      - ACCEPT_EULA=Y 
+    volumes:
+      - seq-data:/data
+    networks:
+      - observability-example-network
 
 networks:
   observability-example-network:
@@ -33,3 +48,4 @@ networks:
 
 volumes:
   observabilityapi-data:
+  seq-data:

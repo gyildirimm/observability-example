@@ -1,5 +1,5 @@
-
 using Scalar.AspNetCore;
+using Serilog;
 
 namespace ExampleWebAPI;
 
@@ -9,6 +9,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Host.UseSerilog((context, loggerConfig) => loggerConfig.ReadFrom.Configuration(context.Configuration));
         // Add services to the container.
         builder.Services.AddAuthorization();
 
@@ -17,6 +18,7 @@ public class Program
 
         var app = builder.Build();
 
+        app.UseSerilogRequestLogging();
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -30,6 +32,24 @@ public class Program
 
         app.MapGet("/", () => Results.Redirect("/scalar"));
         app.MapGet("/hello", () => "Hello, World!");
+        
+        // Yeni information endpoint'i
+        app.MapGet("/information", (ILogger<Program> logger) => {
+            logger.LogInformation("/information endpoint'i çağrıldı");
+            return "Information log message created";
+        });
+
+        // Yeni warning endpoint'i
+        app.MapGet("/warning", (ILogger<Program> logger) => {
+            logger.LogWarning("/warning endpoint'i çağrıldı");
+            return "Warning log message created";
+        });
+
+        // Yeni error endpoint'i
+        app.MapGet("/error", (ILogger<Program> logger) => {
+            logger.LogError("/error endpoint'i çağrıldı");
+            return "Error log message created";
+        });
 
         app.Run();
     }
