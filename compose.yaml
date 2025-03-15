@@ -42,6 +42,85 @@ services:
     networks:
       - observability-example-network
 
+  observability-loki:
+    image: grafana/loki:latest
+    container_name: observability-loki
+    user: root
+    ports:
+      - "9182:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - observability-example-network
+    volumes:
+      - loki-data:/var/lib/loki
+      - .deploy/loki/loki-config.yaml:/etc/loki/local-config.yaml
+
+  observability-promtail:
+    image: grafana/promtail:latest
+    container_name: observability-promtail
+    volumes:
+      - /var/log:/var/log
+      - .deploy/promtail/promtail-config.yaml:/etc/promtail/config.yaml
+    command: -config.file=/etc/promtail/config.yaml
+    networks:
+      - observability-example-network
+    depends_on:
+      - observability-loki
+
+  observability-tempo:
+    image: grafana/tempo:latest
+    container_name: observability-tempo
+    user: root
+    ports:
+      - "9184:3200"
+      - "9186:9411"
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    networks:
+      - observability-example-network
+    volumes:
+      - tempo-data:/var/lib/tempo
+      - .deploy/tempo/tempo-config.yaml:/etc/tempo.yaml
+    expose:
+      - "9095"
+      - "4317"
+      - "4318"
+
+  observability-prometheus:
+    image: prom/prometheus:latest
+    container_name: observability-prometheus
+    ports:
+      - "9188:9090"
+    volumes:
+      - prometheus-data:/etc/prometheus
+      - .deploy/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - observability-example-network
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    depends_on:
+      - observability-api
+      - observability-loki
+      - observability-tempo
+
+  observability-grafana:
+    image: grafana/grafana:latest
+    container_name: observability-grafana
+    ports:
+      - "9190:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - .deploy/grafana/provisioning:/etc/grafana/provisioning
+      - .deploy/grafana/dashboards:/etc/grafana/dashboards
+    networks:
+      - observability-example-network
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - observability-prometheus
+      - observability-loki
+      - observability-tempo
+
 networks:
   observability-example-network:
     driver: bridge
@@ -49,3 +128,7 @@ networks:
 volumes:
   observabilityapi-data:
   seq-data:
+  loki-data:
+  tempo-data:
+  prometheus-data:
+  grafana-data:
