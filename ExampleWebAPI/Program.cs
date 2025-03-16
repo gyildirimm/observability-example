@@ -60,7 +60,7 @@ public class Program
                 .AddConsoleExporter()
                 .AddOtlpExporter(opts =>
                 {
-                    opts.Endpoint = new Uri("http://observability-tempo:9095"); // Tempo OTLP gRPC endpoint
+                    opts.Endpoint = new Uri("http://observability-tempo:4317"); // Tempo OTLP gRPC endpoint
                     opts.Protocol = OtlpExportProtocol.Grpc; // GRPC protokolünü kullan
                 });
         })
@@ -177,6 +177,9 @@ public class Program
             -1, 
             true);
 
+        // ActivitySource'u global olarak tanımla
+        var activitySource = new ActivitySource("ExampleWebAPI", "1.0.0");
+
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
@@ -195,22 +198,46 @@ public class Program
         app.MapGet("/", () => Results.Redirect("/scalar"));
         app.MapGet("/hello", () => "Hello, World!");
         
-        // Yeni information endpoint'i
+        // Information endpoint'i
         app.MapGet("/information", (ILogger<Program> logger) => {
+            using var activity = activitySource.StartActivity("Information Endpoint");
+            activity?.SetTag("endpoint", "information");
+            
             logger.LogInformation("/information endpoint'i çağrıldı");
             return "Information log message created";
         });
 
-        // Yeni warning endpoint'i
+        // Warning endpoint'i
         app.MapGet("/warning", (ILogger<Program> logger) => {
+            using var activity = activitySource.StartActivity("Warning Endpoint");
+            activity?.SetTag("endpoint", "warning");
+            activity?.SetTag("severity", "warning");
+            
             logger.LogWarning("/warning endpoint'i çağrıldı");
             return "Warning log message created";
         });
 
-        // Yeni error endpoint'i
+        // Error endpoint'i
         app.MapGet("/error", (ILogger<Program> logger) => {
+            using var activity = activitySource.StartActivity("Error Endpoint");
+            activity?.SetTag("endpoint", "error");
+            activity?.SetTag("severity", "error");
+            
             logger.LogError("/error endpoint'i çağrıldı");
             return "Error log message created";
+        });
+
+        // Test trace endpoint'i (mevcut kodu güncelle)
+        app.MapGet("/test-trace", async (ILogger<Program> logger) =>
+        {
+            using var activity = activitySource.StartActivity("Test Trace");
+            activity?.SetTag("endpoint", "test-trace");
+            activity?.SetTag("custom.tag", "value");
+            
+            logger.LogInformation("Test trace generated");
+            
+            await Task.Delay(500);
+            return "Test trace sent!";
         });
 
         app.Run();

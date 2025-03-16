@@ -1,0 +1,15 @@
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    type: prometheus
+    url: http://observability-prometheus:9090
+    access: proxy
+    isDefault: true
+  - name: Loki
+    type: loki
+    url: http://observability-loki:3100
+    access: proxy
+  - name: Tempo
+    type: tempo
+    url: http://observability-tempo:3200
+    access: proxy

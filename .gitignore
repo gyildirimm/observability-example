@@ -62,9 +62,6 @@ $RECYCLE.BIN/
 # VS Code directories
 #.vscode/
 
-#Deploy Volume
-.deploy/
-
 # Rider directories
 .idea/
 

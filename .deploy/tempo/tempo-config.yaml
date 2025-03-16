@@ -1,0 +1,23 @@
+server:
+  http_listen_port: 3200
+  grpc_listen_port: 9095
+
+distributor:
+  receivers:
+    jaeger:
+      protocols:
+        thrift_http:
+        thrift_binary:
+        thrift_compact:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317 # ✅ OTLP gRPC endpoint’i
+        http:
+          endpoint: 0.0.0.0:4318 # ✅ OTLP HTTP endpoint’i
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /var/lib/tempo/traces
