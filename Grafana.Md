@@ -114,7 +114,7 @@ services:
 
 👉 **Grafana’yı `http://localhost:9190` üzerinden açabilirsin.**  
 
-![Observability Overview](./docs/net-core-dashboard.png)
+![Observability Overview](./documents/net-core-dashboard.png)
 
 ---
 
@@ -123,7 +123,7 @@ services:
 **Loki**, merkezi bir log yönetim sistemidir. **Promtail ile logları toplayıp Grafana üzerinden görselleştirmeye olanak tanır.**  
 Grafana Loki’yi kullanarak sistem loglarını analiz edebiliriz.
 
-![Observability Overview](./docs/loki-logs.png)
+![Loki Overview](./documents/loki-logs.png)
 
 ### **📌 Docker Compose ile Loki Nasıl Eklenir?**
 
@@ -203,7 +203,7 @@ services:
 **Tempo**, dağıtılmış izleme (tracing) için kullanılan bir sistemdir.  
 **OpenTelemetry, Jaeger ve Zipkin gibi sistemlerden gelen tracing verilerini saklar ve analiz eder.**
 
-![Observability Overview](./docs/tempo-tracing.png)
+![Tempo Overview](./documents/tempo-tracing.png)
 
 ### **📌 Docker Compose ile Tempo Nasıl Eklenir?**
 
@@ -257,7 +257,7 @@ builder.Services.AddOpenTelemetry()
 **Prometheus**, metrikleri toplayan ve sorgulayan bir sistemdir.  
 Grafana ile birlikte kullanılarak **sistem performansını izlemek ve alarmlar oluşturmak için idealdir.**
 
-![Observability Overview](./docs/prometheus-panel.png)
+![Prometheus Overview](./documents/prometheus-panel.png)
 
 ### **📌 Docker Compose ile Prometheus Nasıl Eklenir?**
 
