@@ -5,6 +5,7 @@ using Scalar.AspNetCore;
 using Serilog;
 using OpenTelemetry.Exporter;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ExampleWebAPI;
 
@@ -99,6 +100,7 @@ public class Program
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
+        builder.Services.AddHttpClient();
 
         var app = builder.Build();
         app.UseSerilogRequestLogging(); // Serilog ile istek loglama
@@ -153,16 +155,67 @@ public class Program
         });
 
         // Test trace endpoint'i (mevcut kodu güncelle)
-        app.MapGet("/test-trace", async (ILogger<Program> logger) =>
+        app.MapGet("/test-trace", async (ILogger<Program> logger, [FromServices] HttpClient httpClient) =>
         {
             using var activity = activitySource.StartActivity("Test Trace");
             activity?.SetTag("endpoint", "test-trace");
             activity?.SetTag("custom.tag", "value");
             
-            logger.LogInformation("Test trace generated");
+            // Alt operasyon 1: HTTP İsteği
+            using (var httpActivity = activitySource.StartActivity("HTTP Request Operation"))
+            {
+                httpActivity?.SetTag("http.method", "GET");
+                logger.LogInformation("Dış servise istek yapılıyor...");
+                try 
+                {
+                    await httpClient.GetAsync("https://jsonplaceholder.typicode.com/todos/1");
+                    httpActivity?.SetTag("http.status", "success");
+                }
+                catch (Exception ex)
+                {
+                    httpActivity?.SetTag("http.status", "failed");
+                    httpActivity?.SetTag("error", ex.Message);
+                    logger.LogError(ex, "HTTP isteği başarısız oldu");
+                }
+            }
+
+            // Alt operasyon 2: Hesaplama Simülasyonu
+            using (var calcActivity = activitySource.StartActivity("Calculation Operation"))
+            {
+                logger.LogInformation("Karmaşık hesaplama yapılıyor...");
+                await Task.Delay(200); // Hesaplama simülasyonu
+                calcActivity?.SetTag("calculation.type", "complex");
+                calcActivity?.SetTag("calculation.duration", "200ms");
+            }
+
+            // Alt operasyon 3: Cache Operasyonu Simülasyonu
+            using (var cacheActivity = activitySource.StartActivity("Cache Operation"))
+            {
+                logger.LogInformation("Cache kontrol ediliyor...");
+                await Task.Delay(100);
+                cacheActivity?.SetTag("cache.result", "miss");
+                cacheActivity?.AddEvent(new ActivityEvent("Cache Miss", DateTimeOffset.UtcNow));
+            }
+
+            // Hata senaryosu simülasyonu
+            if (Random.Shared.Next(0, 10) < 2) // %20 olasılıkla hata
+            {
+                using var errorActivity = activitySource.StartActivity("Error Simulation");
+                errorActivity?.SetTag("error.type", "random_failure");
+                logger.LogWarning("Rastgele bir hata oluştu!");
+                throw new Exception("Simüle edilmiş hata!");
+            }
+
+            // Başarılı senaryo
+            activity?.SetTag("operation.status", "success");
+            activity?.AddEvent(new ActivityEvent("Operation Completed", DateTimeOffset.UtcNow));
             
-            await Task.Delay(500);
-            return "Test trace sent!";
+            return new
+            {
+                message = "Test trace completed!",
+                timestamp = DateTimeOffset.UtcNow,
+                traceId = activity?.TraceId.ToString()
+            };
         });
 
         app.Run();
