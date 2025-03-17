@@ -37,4 +37,4 @@ Serilog'un avantajları:
 
 ![Prometheus Overview](./documents/prometheus-panel.png)
 
-**Bu araçların kurulumu ve detaylı bilgileri için** [Grafana, Loki, Tempo ve Prometheus Kurulumu](./Grafana.md) **makalesine göz atabilirsiniz.**
+**Bu araçların kurulumu ve detaylı bilgileri için** [Grafana, Loki, Tempo ve Prometheus Kurulumu](./Grafana.Md) **makalesine göz atabilirsiniz.**
